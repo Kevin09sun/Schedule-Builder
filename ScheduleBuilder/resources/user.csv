@@ -1,0 +1,4 @@
+StudentName, ActivityName, StartTime, EndTime, Location, Priority
+Bessie Cow,   CS Club,      1140,      1220,    Rm 204,   8
+Bessie Cow,   Band,         1530,      1630,    MusicRm,  5
+Farmer John, Math Club,    1145,      1225,    MathWing, 9
