@@ -3,7 +3,7 @@ package ScheduleBuilder.src.logic;
 import ScheduleBuilder.src.model.*;
 import ScheduleBuilder.src.data.*;
 import java.util.*;
-import javafx.util.Pair;
+import java.util.AbstractMap.SimpleEntry;
 public class LocationManager {
     private HashMap<String, ArrayList<LocationEdge>> adjMap;
 
@@ -22,6 +22,27 @@ public class LocationManager {
         if (from.toLowerCase().equals(to.toLowerCase())){
             return 0;
         }
-        PriorityQueue<Pair<String, int>>;
+        PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(Map.Entry.comparingByValue());
+        HashMap<String, Integer> shortestTime = new HashMap<>();
+        pq.add(new SimpleEntry<>(from, 0));
+        shortestTime.put(from, 0);
+        while (!pq.isEmpty()){
+            Map.Entry<String, Integer> cur = pq.poll();
+            if (cur.getKey().equals(to)){
+                return cur.getValue();
+            }
+            if (cur.getValue() > shortestTime.getOrDefault(cur.getKey(), Integer.MAX_VALUE)){
+                continue;
+            }
+            if (adjMap.containsKey(cur.getKey())){
+                for(LocationEdge edge : adjMap.get(cur.getKey())){
+                    if (cur.getValue() + edge.getMinutes() < shortestTime.getOrDefault(edge.getDestionation(), Integer.MAX_VALUE)){
+                        pq.add(new SimpleEntry<>(edge.getDestionation(), cur.getValue() + edge.getMinutes()));
+                        shortestTime.put(edge.getDestionation(), cur.getValue() + edge.getMinutes());
+                    }
+                }
+            }
+        }
+        return Integer.MAX_VALUE;
     }
 }

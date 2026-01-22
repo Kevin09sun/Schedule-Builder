@@ -1,3 +1,5 @@
 Origin, Destination, Minutes
 Rm 204, MathWing,    6
 Gym,    Cafeteria,   3
+MathWing, Gym, 4
+Rm 204, Cafeteria, 20
