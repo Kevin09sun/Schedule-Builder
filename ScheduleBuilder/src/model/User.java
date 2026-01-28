@@ -13,5 +13,11 @@ public class User {
     public void addActivity(Activity act){
         activities.add(act);
     }
-    
+
+    public ArrayList<Activity> getActivities(){
+        return activities;
+    }
+    public String getName(){
+        return username;
+    }
 }
