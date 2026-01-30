@@ -13,7 +13,9 @@ public class User {
     public void addActivity(Activity act){
         activities.add(act);
     }
-
+    /**
+     * @return ArrayList<Activity> containing all activities of the user
+     */
     public ArrayList<Activity> getActivities(){
         return activities;
     }

@@ -7,11 +7,15 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String filePath = "ScheduleBuilder\\resources\\location.csv";
-        File f = new File(filePath);
+        String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
+        String filePathUser = "ScheduleBuilder\\resources\\user.csv";
+        File f = new File(filePathLocation);
         System.out.println("Hello world");
-        LocationManager lm = new LocationManager();
-        DataManager.loadLoaction(filePath, lm);
-        System.out.println(lm.getTravelTime("Rm 204", "Cafeteria"));
+        ArrayList<User> allusers = DataManager.loadUsers(filePathUser);
+        User u = new User("Farmer John");
+        Activity a = new Activity("AI Club", 1330, 1400, "Rm 204", 1);
+        u.addActivity(a);
+        allusers.add(u);
+        DataManager.saveUser(filePathUser, allusers);
     }
 }

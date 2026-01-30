@@ -42,11 +42,23 @@ public class DataManager {
     }
 
     public static void saveUser(String filename, ArrayList<User> allUsers) throws IOException{
-        PrintWriter pw = new PrintWriter(new FileWriter(filename));
-        for (User u : allUsers){
-            for (Activity a : u.getActivities()){
-                pw.println(u.getName() + "," + a.getName() + "," + a.getStartTime() + "," + a.getEndTime() + "," + a.getLocation() + "," + a.getPriority());
+        try(FileWriter fw = new FileWriter(filename);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw)){
+
+            for (User u : allUsers){
+                for (Activity a : u.getActivities()) {
+                    String line = u.getName() + "," + 
+                                a.getName() + "," + 
+                                a.getStartTime() + "," + 
+                                a.getEndTime() + "," + 
+                                a.getLocation() + "," + 
+                                a.getPriority();
+                    
+                    pw.println(line);
+                }
             }
+            
         }
         System.out.println("All data saved to " + filename);
     }
