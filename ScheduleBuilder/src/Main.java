@@ -10,12 +10,19 @@ public class Main {
         String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
         String filePathUser = "ScheduleBuilder\\resources\\user.csv";
         File f = new File(filePathLocation);
+        LocationManager lm = new LocationManager();
+        ConflictChecker cc = new ConflictChecker(lm);
         System.out.println("Hello world");
+
+        DataManager.loadLoaction(filePathLocation, lm);
+
         ArrayList<User> allusers = DataManager.loadUsers(filePathUser);
-        User u = new User("Farmer John");
-        Activity a = new Activity("AI Club", 1330, 1400, "Rm 204", 1);
-        u.addActivity(a);
-        allusers.add(u);
-        DataManager.saveUser(filePathUser, allusers);
+        for (User u : allusers){
+            if (u.getActivities().size() >= 2){
+                if (cc.hasConflict(u.getActivities().get(0), u.getActivities().get(1))){
+                    System.out.println(u.getName() + " has conflicts");
+                }
+            }
+        }
     }
 }
