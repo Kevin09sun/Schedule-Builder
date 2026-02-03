@@ -6,25 +6,114 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    private static LocationManager lm;
+    private static ConflictChecker cc;
+    private static ScheduleOptimizer so;
+    private static ArrayList<User> users;
+    private static BufferedReader br;
+
+    private static final String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
+    private static final String filePathUser = "ScheduleBuilder\\resources\\user.csv";
     public static void main(String[] args) throws Exception {
-        String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
-        String filePathUser = "ScheduleBuilder\\resources\\user.csv";
-        File f = new File(filePathLocation);
-        LocationManager lm = new LocationManager();
-        ConflictChecker cc = new ConflictChecker(lm);
-        ScheduleOptimizer so = new ScheduleOptimizer(cc);
-        System.out.println("Hello world");
-
-        DataManager.loadLoaction(filePathLocation, lm);
-
-        ArrayList<User> allusers = DataManager.loadUsers(filePathUser);
-        for (User u : allusers){
-            System.out.println("Optimal Activities for user: " + u.getName());
-            ArrayList<Activity> temp = so.getOptimalSchedule(u.getActivities());
-            for (Activity a : temp){
-                System.out.print(a.getName() + " ");
-            }
-            System.out.println();
+        initialize();
+        System.out.println("   CLUB CONFLICT SCHEDULER - MAIN MENU");
+        System.out.println("1. Student Mode (Manage Personal Schedule)");
+        System.out.println("2. Club Leader Mode (Find Common Times)");
+        System.out.println("3. Save & Exit");
+        System.out.print("Select an option: ");
+        int choice = Integer.parseInt(br.readLine());
+        switch (choice) {
+            case 1:
+                studentMode();
+                break;
+            case 2:
+                leaderMode();
+                break;
+            case 3:
+                DataManager.saveUser(filePathUser, users);
+                System.out.println("User saved, exiting...");
+                break;
+            default:
+                System.out.println("Invalid Input");
+                break;
         }
     }
+
+    private static void studentMode() throws IOException{
+        System.out.println("Enter your name to login/create account: ");
+        String name = br.readLine().trim();
+        User curUser = null;
+        for (User u : users){
+            if (u.getName().equals(name)){
+                curUser = u;
+                break;
+            }
+        }
+        if (curUser == null){
+            curUser = new User(name);
+            users.add(curUser);
+            System.out.println("New profile created for " + name);
+        }
+        boolean inMenu = true;
+        while (inMenu){
+            System.out.println("\n--- Student Menu: " + curUser.getName() + " ---");
+            System.out.println("1. View Current Schedule");
+            System.out.println("2. Add Activity");
+            System.out.println("3. Optimize My Schedule (Knapsack)");
+            System.out.println("4. Back to Main Menu");
+            System.out.print("Choice: ");
+            int choice = Integer.parseInt(br.readLine());
+            switch (choice) {
+                case 1:
+                    printSchedule(curUser.getActivities());
+                    break;
+                case 2:
+                    addActivityToSchedule(curUser);
+                    break;
+                case 3:
+                    System.out.println("Calculating optimal schedule based on priorities...");
+                    ArrayList<Activity> optimized = so.getOptimalSchedule(curUser.getActivities());
+                    System.out.println("--- OPTIMIZED SCHEDULE SUGGESTION ---");
+                    printSchedule(optimized);
+                    break;
+                case 4:
+                    inMenu = false;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private static void printSchedule(ArrayList<Activity> activities){
+        if (activities.isEmpty()){
+            System.out.println("No Activities Found");
+        }
+        for (Activity a : activities){
+            System.out.println(" - " + a.getName() + 
+                    " [" + a.getStartTime() + "-" + a.getEndTime() + "] " +
+                    "@" + a.getLocation() + " (P:" + a.getPriority() + ")");
+        }
+    }
+
+    private static void addActivityToSchedule(User u){
+        System.out.println("Enter Activity Name: ");
+        
+    }
+
+    private static void leaderMode(){
+        
+    }
+
+    private static void initialize() throws IOException{
+        lm = new LocationManager();
+        br = new BufferedReader(new InputStreamReader(System.in));
+        DataManager.loadLoaction(filePathLocation, lm);
+        cc = new ConflictChecker(lm);
+        so = new ScheduleOptimizer(cc);
+        users = DataManager.loadUsers(filePathUser);
+        System.out.println("System initailized with " + users.size() + " users");
+    }
+
+
 }
