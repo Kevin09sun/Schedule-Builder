@@ -58,7 +58,6 @@ public class DataManager {
                     pw.println(line);
                 }
             }
-            
         }
         System.out.println("All data saved to " + filename);
     }
