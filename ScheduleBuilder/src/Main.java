@@ -16,26 +16,28 @@ public class Main {
     private static final String filePathUser = "ScheduleBuilder\\resources\\user.csv";
     public static void main(String[] args) throws Exception {
         initialize();
-        System.out.println("   CLUB CONFLICT SCHEDULER - MAIN MENU");
-        System.out.println("1. Student Mode (Manage Personal Schedule)");
-        System.out.println("2. Club Leader Mode (Find Common Times)");
-        System.out.println("3. Save & Exit");
-        System.out.print("Select an option: ");
-        int choice = Integer.parseInt(br.readLine());
-        switch (choice) {
-            case 1:
-                studentMode();
-                break;
-            case 2:
-                leaderMode();
-                break;
-            case 3:
-                DataManager.saveUser(filePathUser, users);
-                System.out.println("User saved, exiting...");
-                break;
-            default:
-                System.out.println("Invalid Input");
-                break;
+        while (true){
+            System.out.println("   CLUB CONFLICT SCHEDULER - MAIN MENU");
+            System.out.println("1. Student Mode (Manage Personal Schedule)");
+            System.out.println("2. Club Leader Mode (Find Common Times)");
+            System.out.println("3. Save & Exit");
+            System.out.print("Select an option: ");
+            int choice = Integer.parseInt(br.readLine());
+            switch (choice) {
+                case 1:
+                    studentMode();
+                    break;
+                case 2:
+                    leaderMode();
+                    break;
+                case 3:
+                    DataManager.saveUser(filePathUser, users);
+                    System.out.println("User saved, exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid Input");
+                    break;
+            }
         }
     }
 
@@ -59,8 +61,9 @@ public class Main {
             System.out.println("\n--- Student Menu: " + curUser.getName() + " ---");
             System.out.println("1. View Current Schedule");
             System.out.println("2. Add Activity");
-            System.out.println("3. Optimize My Schedule (Knapsack)");
-            System.out.println("4. Back to Main Menu");
+            System.out.println("3: Remove an Activity From my Schedule");
+            System.out.println("4. Optimize My Schedule (Knapsack)");
+            System.out.println("5. Back to Main Menu");
             System.out.print("Choice: ");
             int choice = Integer.parseInt(br.readLine());
             switch (choice) {
@@ -71,12 +74,15 @@ public class Main {
                     addActivityToSchedule(curUser);
                     break;
                 case 3:
+                    removeActivity(curUser);
+                    break;
+                case 4:
                     System.out.println("Calculating optimal schedule based on priorities...");
                     ArrayList<Activity> optimized = so.getOptimalSchedule(curUser.getActivities());
                     System.out.println("--- OPTIMIZED SCHEDULE SUGGESTION ---");
                     printSchedule(optimized);
                     break;
-                case 4:
+                case 5:
                     inMenu = false;
                     break;
                 default:
@@ -96,9 +102,40 @@ public class Main {
         }
     }
 
-    private static void addActivityToSchedule(User u){
+    private static void addActivityToSchedule(User u) throws IOException{
         System.out.println("Enter Activity Name: ");
-        
+        String name = br.readLine().trim();
+        System.out.println("Enter Activity Start Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
+        int start = Integer.parseInt(br.readLine());
+        System.out.println("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
+        int end = Integer.parseInt(br.readLine());
+        System.out.println("Enter Activity Location: ");
+        String location = br.readLine();
+        System.out.println("Enter Activity Priority (1 = low, 9 = high): ");
+        int priority = Integer.parseInt(br.readLine());
+        Activity a = new Activity(name, start, end, location, priority);
+        for (Activity acts : u.getActivities()){
+            if (cc.hasConflict(acts, a)){
+                System.out.println("The new activity has conflict with another activity " + acts.getName() + " . Are you sure you want to add? (Respond Yes or No)");
+                String response = br.readLine();
+                if (response.equals("Yes")){
+                    u.addActivity(a);
+                    System.out.println("Activity Added");
+                    return;
+                }
+                else {
+                    System.out.println("Ok, going back to menu");
+                    return;
+                }
+            }
+        }
+        u.addActivity(a);
+        System.out.println("Activity Added");
+        return;
+    }
+
+    public static void removeActivity(User u){
+
     }
 
     private static void leaderMode(){
