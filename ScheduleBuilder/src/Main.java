@@ -81,6 +81,15 @@ public class Main {
                     ArrayList<Activity> optimized = so.getOptimalSchedule(curUser.getActivities());
                     System.out.println("--- OPTIMIZED SCHEDULE SUGGESTION ---");
                     printSchedule(optimized);
+                    System.out.println("Do you wish to use this schedule? (Respond with Yes or No): ");
+                    String ans = br.readLine();
+                    if (ans.equals("Yes")){
+                        curUser.updateSchedule(optimized);
+                        System.out.println("Schedule updated");
+                    }
+                    else {
+                        System.out.println("Ok, schedule unchanged");
+                    }
                     break;
                 case 5:
                     inMenu = false;

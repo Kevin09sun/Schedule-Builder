@@ -19,6 +19,11 @@ public class User {
     public ArrayList<Activity> getActivities(){
         return activities;
     }
+
+    public void updateSchedule(ArrayList<Activity> newSchedule){
+        activities = newSchedule;
+    }
+
     public String getName(){
         return username;
     }
