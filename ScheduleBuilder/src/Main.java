@@ -143,8 +143,17 @@ public class Main {
         return;
     }
 
-    public static void removeActivity(User u){
-
+    public static void removeActivity(User u) throws IOException{
+        System.out.println("Enter the name of the activity you wish to remove: ");
+        String name = br.readLine();
+        for (Activity a : u.getActivities()){
+            if (a.getName().equals(name)){
+                u.getActivities().remove(a);
+                System.out.println("Activity Removed");
+                return;
+            }
+        }
+        System.out.println("Didn't find Activity");
     }
 
     private static void leaderMode(){
