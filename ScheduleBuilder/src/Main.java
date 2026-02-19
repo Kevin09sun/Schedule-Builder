@@ -156,8 +156,80 @@ public class Main {
         System.out.println("Didn't find Activity");
     }
 
-    private static void leaderMode(){
-        
+    private static void leaderMode() throws IOException{
+        System.out.println("\n--- Club Leader Mode ---");
+        if (users.isEmpty()) {
+            System.out.println("No users in the database to select.");
+            return;
+        }
+        ArrayList<User> selected = new ArrayList<>();
+        while (true){
+            System.out.println("\n--- Select Students ---");
+            System.out.println("Currently Selected: " + selected.size() + " students");
+            
+            System.out.println("Available Students:");
+            for (User u : users) {
+                if (!selected.contains(u)) {
+                    System.out.println(" - " + u.getName());
+                }
+            }
+            System.out.println("\nType 'done' when you are finished selecting.");
+            System.out.print("Enter student name to add: ");
+            String inputName = br.readLine();
+            
+            // Exit condition
+            if (inputName.equalsIgnoreCase("done") || inputName.equals("0")) {
+                break;
+            }
+
+            boolean studentFound = false;
+            for (User u : users) {
+                if (u.getName().equalsIgnoreCase(inputName)) {
+                    studentFound = true;
+                    if (!selected.contains(u)) {
+                        selected.add(u);
+                        System.out.println("SUCCESS: Added " + u.getName() + " to the meeting.");
+                    } else {
+                        System.out.println("NOTICE: " + u.getName() + " is already selected.");
+                    }
+                    break;
+                }
+            }
+            if (!studentFound) {
+                System.out.println("ERROR: Could not find a student named '" + inputName + "'. Check spelling.");
+            }
+        }
+        System.out.println("\n--- Meeting Details ---");
+        System.out.print("Meeting Name: ");
+        String meetingName = br.readLine();
+        System.out.print("Meeting Location: ");
+        String meetingLoc = br.readLine();
+        System.out.print("Duration (in minutes): ");
+        int duration = Integer.parseInt(br.readLine());
+        System.out.print("Priority Score (1-10): ");
+        int priority = Integer.parseInt(br.readLine());
+
+        System.out.println("\nScanning for common times between 8:00 and 16:00...");
+        ArrayList<Activity> possibleSlots = new ArrayList<>();
+
+        for (int hour = 8; hour <= 16; hour++){
+            for (int min = 0; min <= 45; min += 15){
+                int startTime = hour * 100 + min;
+                int endTime = startTime + duration;
+                if (endTime > 1700){
+                    continue;
+                }
+            }
+        }
+    }
+
+    private static int addMinutes(int startTime, int duration){
+        int hours = startTime / 100;
+        int minutes = startTime % 100;
+        minutes += duration;
+        hours += minutes / 60;
+        minutes %= 60;
+        return (hours * 100) + minutes;
     }
 
     private static void initialize() throws IOException{
