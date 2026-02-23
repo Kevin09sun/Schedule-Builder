@@ -222,7 +222,7 @@ public class Main {
                 }
                 Activity proposed = new Activity(meetingName, startTime, endTime, meetingLoc, priority);
                 boolean isSltoFree = true;
-                for (User u : users){
+                for (User u : selected){
                     for (Activity existing : u.getActivities()){
                         if (cc.hasConflict(existing, proposed)){
                             isSltoFree = false;
@@ -253,7 +253,7 @@ public class Main {
         int choice = Integer.parseInt(br.readLine());
         if (choice > 0 && choice <= possibleSlots.size()) {
             Activity confirmedMeeting = possibleSlots.get(choice - 1);
-            for (User u : users) {
+            for (User u : selected) {
                 u.addActivity(confirmedMeeting);
             }
             DataManager.saveUser(filePathUser, users);
