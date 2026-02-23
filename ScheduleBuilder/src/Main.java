@@ -11,6 +11,7 @@ public class Main {
     private static ScheduleOptimizer so;
     private static ArrayList<User> users;
     private static BufferedReader br;
+    private static DataManager dm;
 
     private static final String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
     private static final String filePathUser = "ScheduleBuilder\\resources\\user.csv";
@@ -219,7 +220,47 @@ public class Main {
                 if (endTime > 1700){
                     continue;
                 }
+                Activity proposed = new Activity(meetingName, startTime, endTime, meetingLoc, priority);
+                boolean isSltoFree = true;
+                for (User u : users){
+                    for (Activity existing : u.getActivities()){
+                        if (cc.hasConflict(existing, proposed)){
+                            isSltoFree = false;
+                            break;
+                        }
+                    }
+                    if (!isSltoFree){
+                        break;
+                    }
+                }
+                if (isSltoFree){
+                    possibleSlots.add(proposed);
+                }
             }
+        }
+        if (possibleSlots.isEmpty()) {
+            System.out.println("FAILED: No common time found for all selected students.");
+            return;
+        }
+        System.out.println("\n--- Available Time Slots ---");
+        for (int i = 0; i < possibleSlots.size(); i++){
+            Activity slot = possibleSlots.get(i);
+            System.out.println((i + 1) + ". " + slot.getStartTime() + " to " + slot.getEndTime());
+        }
+        
+        System.out.print("\nSelect a slot to confirm (or 0 to cancel): ");
+
+        int choice = Integer.parseInt(br.readLine());
+        if (choice > 0 && choice <= possibleSlots.size()) {
+            Activity confirmedMeeting = possibleSlots.get(choice - 1);
+            for (User u : users) {
+                u.addActivity(confirmedMeeting);
+            }
+            DataManager.saveUser(filePathUser, users);
+            System.out.println("\nSUCCESS: '" + meetingName + "' added to all selected profiles and saved!");
+        }
+        else {
+            System.out.println("Action Cancelled.");
         }
     }
 
