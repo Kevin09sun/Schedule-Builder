@@ -47,7 +47,7 @@ public class Main {
         String name = br.readLine().trim();
         User curUser = null;
         for (User u : users){
-            if (u.getName().equals(name)){
+            if (u.getName().toLowerCase().equals(name.toLowerCase())){
                 curUser = u;
                 break;
             }
@@ -148,7 +148,7 @@ public class Main {
         System.out.println("Enter the name of the activity you wish to remove: ");
         String name = br.readLine();
         for (Activity a : u.getActivities()){
-            if (a.getName().equals(name)){
+            if (a.getName().toLowerCase().equals(name.toLowerCase())){
                 u.getActivities().remove(a);
                 System.out.println("Activity Removed");
                 return;
@@ -216,7 +216,7 @@ public class Main {
         for (int hour = 8; hour <= 16; hour++){
             for (int min = 0; min <= 45; min += 15){
                 int startTime = hour * 100 + min;
-                int endTime = startTime + duration;
+                int endTime = addMinutes(startTime, duration);
                 if (endTime > 1700){
                     continue;
                 }

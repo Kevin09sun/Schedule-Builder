@@ -10,7 +10,7 @@ public class LocationEdge {
     }
     
     public String getDestionation(){
-        return destination;
+        return destination.toLowerCase();
     }
 
     public int getMinutes(){
