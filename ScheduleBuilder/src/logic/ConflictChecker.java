@@ -22,7 +22,9 @@ public class ConflictChecker {
         if (b.getStartTime() < a.getEndTime()){
             return true;
         }
-        int timeDif = b.getStartTime() - a.getEndTime();
+        int aEndMins = (a.getEndTime() / 100) * 60 + (a.getEndTime() % 100);
+        int bStartMins = (b.getStartTime() / 100) * 60 + (b.getStartTime() % 100);
+        int timeDif = bStartMins - aEndMins;
         if (lm.getTravelTime(a.getLocation(), b.getLocation()) > timeDif){
             return true;
         }
