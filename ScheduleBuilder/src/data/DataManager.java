@@ -32,7 +32,17 @@ public class DataManager {
             int end = Integer.parseInt(parts[3].trim());
             String location = parts[4].trim();
             int priority = Integer.parseInt(parts[5].trim());
-            Activity act = new Activity(actName, start, end, location, priority);
+            boolean days[] = new boolean[7];
+            if (parts.length >= 7){
+                String dayStr = parts[6].trim();
+                for (int i = 0; i < 7; i++){
+                    days[i] = (dayStr.charAt(i) == '1');
+                }
+            }
+            else {
+                days[0] = true;
+            }
+            Activity act = new Activity(actName, start, end, location, priority, days);
             userMap.putIfAbsent(username, new User(username));
             userMap.get(username).addActivity(act);
             line = br.readLine();
@@ -53,7 +63,8 @@ public class DataManager {
                                 a.getStartTime() + "," + 
                                 a.getEndTime() + "," + 
                                 a.getLocation() + "," + 
-                                a.getPriority();
+                                a.getPriority() + "," +
+                                a.getDaysCSV();
                     
                     pw.println(line);
                 }

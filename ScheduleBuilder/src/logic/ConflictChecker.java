@@ -14,6 +14,15 @@ public class ConflictChecker {
      * @return A boolean indicating whether it is possible to get from activity a to b accounting for the travel time between the two
      */
     public boolean hasConflict(Activity a, Activity b){
+        boolean sameDay = false;
+        for (int i = 0; i < 7; i++){
+            if (a.getDays()[i] && b.getDays()[i]){
+                sameDay = true;
+            }
+        }
+        if (!sameDay){
+            return false;
+        }
         if (a.getStartTime() > b.getStartTime()){
             Activity temp = a;
             a = b;
