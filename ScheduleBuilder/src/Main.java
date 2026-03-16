@@ -106,9 +106,7 @@ public class Main {
             System.out.println("No Activities Found");
         }
         for (Activity a : activities){
-            System.out.println(" - " + a.getName() + 
-                    " [" + a.getStartTime() + "-" + a.getEndTime() + "] " +
-                    "@" + a.getLocation() + " (P:" + a.getPriority() + ")");
+            System.out.println(" - " + a.getName() + " [" + a.getDaysString() + " | " + a.getStartTime() + "-" + a.getEndTime() + "] " +  "@" + a.getLocation() + " (P:" + a.getPriority() + ")");
         }
     }
 
@@ -123,7 +121,20 @@ public class Main {
         String location = br.readLine();
         System.out.println("Enter Activity Priority (1 = low, 9 = high): ");
         int priority = Integer.parseInt(br.readLine());
-        Activity a = new Activity(name, start, end, location, priority);
+
+        System.out.println("Enter days it repeats (1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun).");
+        System.out.println("Example: Type '135' for Mon/Wed/Fri, or '12345' for Every Weekday:");
+        String daysInput = br.readLine().trim();
+
+        boolean[] repeatingDays = new boolean[7];
+        for (char c : daysInput.toCharArray()){
+            int dayNum = Character.getNumericValue(c);
+            if (dayNum >= 1 && dayNum <= 7){
+                repeatingDays[dayNum - 1] = true;
+            }
+        }
+
+        Activity a = new Activity(name, start, end, location, priority, repeatingDays);
         for (Activity acts : u.getActivities()){
             if (cc.hasConflict(acts, a)){
                 System.out.println("The new activity has conflict with another activity " + acts.getName() + " . Are you sure you want to add? (Respond Yes or No)");
@@ -212,29 +223,32 @@ public class Main {
 
         System.out.println("\nScanning for common times between 8:00 and 16:00...");
         ArrayList<Activity> possibleSlots = new ArrayList<>();
-
-        for (int hour = 8; hour <= 16; hour++){
-            for (int min = 0; min <= 45; min += 15){
-                int startTime = hour * 100 + min;
-                int endTime = addMinutes(startTime, duration);
-                if (endTime > 1700){
-                    continue;
-                }
-                Activity proposed = new Activity(meetingName, startTime, endTime, meetingLoc, priority);
-                boolean isSltoFree = true;
-                for (User u : selected){
-                    for (Activity existing : u.getActivities()){
-                        if (cc.hasConflict(existing, proposed)){
-                            isSltoFree = false;
+        for (int day = 0; day < 5; day++){
+            for (int hour = 8; hour <= 16; hour++){
+                for (int min = 0; min <= 45; min += 15){
+                    int startTime = hour * 100 + min;
+                    int endTime = addMinutes(startTime, duration);
+                    if (endTime > 1700){
+                        continue;
+                    }
+                    boolean[] meetingDays = new boolean[7];
+                    meetingDays[day] = true;
+                    Activity proposed = new Activity(meetingName, startTime, endTime, meetingLoc, priority, meetingDays);
+                    boolean isSltoFree = true;
+                    for (User u : selected){
+                        for (Activity existing : u.getActivities()){
+                            if (cc.hasConflict(existing, proposed)){
+                                isSltoFree = false;
+                                break;
+                            }
+                        }
+                        if (!isSltoFree){
                             break;
                         }
                     }
-                    if (!isSltoFree){
-                        break;
+                    if (isSltoFree){
+                        possibleSlots.add(proposed);
                     }
-                }
-                if (isSltoFree){
-                    possibleSlots.add(proposed);
                 }
             }
         }
@@ -245,7 +259,7 @@ public class Main {
         System.out.println("\n--- Available Time Slots ---");
         for (int i = 0; i < possibleSlots.size(); i++){
             Activity slot = possibleSlots.get(i);
-            System.out.println((i + 1) + ". " + slot.getStartTime() + " to " + slot.getEndTime());
+            System.out.println((i + 1) + ". " + slot.getDaysString() + " " + slot.getStartTime() + " to " + slot.getEndTime());
         }
         
         System.out.print("\nSelect a slot to confirm (or 0 to cancel): ");
