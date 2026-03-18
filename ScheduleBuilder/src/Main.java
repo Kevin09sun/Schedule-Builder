@@ -5,6 +5,9 @@ import ScheduleBuilder.src.model.*;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Main program
+ */
 public class Main {
     private static LocationManager lm;
     private static ConflictChecker cc;
@@ -15,6 +18,7 @@ public class Main {
 
     private static final String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
     private static final String filePathUser = "ScheduleBuilder\\resources\\user.csv";
+
     public static void main(String[] args) throws Exception {
         initialize();
         while (true){
@@ -42,9 +46,16 @@ public class Main {
         }
     }
 
+    /**
+     * Runs student mode, which allows a user to log in or create a profile and manage their schedule through a submenu.
+     * Options include viewing schedule, adding/removing activities, and running the schedule optimizer
+     * @throws IOException
+     */
     private static void studentMode() throws IOException{
         System.out.println("Enter your name to login/create account: ");
         String name = br.readLine().trim();
+
+        // Search for an existing user profile that is case-insensitive
         User curUser = null;
         for (User u : users){
             if (u.getName().toLowerCase().equals(name.toLowerCase())){
@@ -52,11 +63,14 @@ public class Main {
                 break;
             }
         }
+
+        // Create a new profile if no match was found
         if (curUser == null){
             curUser = new User(name);
             users.add(curUser);
             System.out.println("New profile created for " + name);
         }
+
         boolean inMenu = true;
         while (inMenu){
             System.out.println("\n--- Student Menu: " + curUser.getName() + " ---");
@@ -101,6 +115,11 @@ public class Main {
         }
     }
 
+    /**
+     * Prints a formatted list of the schedule to the terminal.
+     * If the list is empty, a message is displayed
+     * @param activities The list of activities to display
+     */
     private static void printSchedule(ArrayList<Activity> activities){
         if (activities.isEmpty()){
             System.out.println("No Activities Found");
@@ -110,6 +129,12 @@ public class Main {
         }
     }
 
+    /**
+     * Prompts the user to add all details relating to an activity and adds it to their schedule.
+     * If it conflicts with an existing schedule, warns the user and gets confirmation before proceeding
+     * @param u The user to add the activity to
+     * @throws IOException If reading input fails
+     */
     private static void addActivityToSchedule(User u) throws IOException{
         System.out.println("Enter Activity Name: ");
         String name = br.readLine().trim();
@@ -126,6 +151,7 @@ public class Main {
         System.out.println("Example: Type '135' for Mon/Wed/Fri, or '12345' for Every Weekday:");
         String daysInput = br.readLine().trim();
 
+        //parse digit string into boolean array
         boolean[] repeatingDays = new boolean[7];
         for (char c : daysInput.toCharArray()){
             int dayNum = Character.getNumericValue(c);
@@ -135,6 +161,8 @@ public class Main {
         }
 
         Activity a = new Activity(name, start, end, location, priority, repeatingDays);
+
+        //checks for conflicts with existing activities before adding
         for (Activity acts : u.getActivities()){
             if (cc.hasConflict(acts, a)){
                 System.out.println("The new activity has conflict with another activity " + acts.getName() + " . Are you sure you want to add? (Respond Yes or No)");
@@ -155,6 +183,11 @@ public class Main {
         return;
     }
 
+    /**
+     * Prompts the user to enter an activity name and remove it from their schedule if found.
+     * @param u The user to remove the activity from
+     * @throws IOException If reading input fails
+     */
     public static void removeActivity(User u) throws IOException{
         System.out.println("Enter the name of the activity you wish to remove: ");
         String name = br.readLine();
@@ -168,6 +201,12 @@ public class Main {
         System.out.println("Didn't find Activity");
     }
 
+    /**
+     * Runs club leader mode, allowing user to select multiple profiles to find a shared time for a meeting.
+     * Goes through every weekday (M~F) and scans for common time slots. Any slot where all students are free is considered as an option.
+     * The confirmed meeting/activity is added to all selected users' profiles
+     * @throws IOException If reading user input fails
+     */
     private static void leaderMode() throws IOException{
         System.out.println("\n--- Club Leader Mode ---");
         if (users.isEmpty()) {
@@ -175,6 +214,8 @@ public class Main {
             return;
         }
         ArrayList<User> selected = new ArrayList<>();
+
+        // Student selection loop
         while (true){
             System.out.println("\n--- Select Students ---");
             System.out.println("Currently Selected: " + selected.size() + " students");
@@ -211,6 +252,8 @@ public class Main {
                 System.out.println("ERROR: Could not find a student named '" + inputName + "'. Check spelling.");
             }
         }
+
+        //collecting meeting info
         System.out.println("\n--- Meeting Details ---");
         System.out.print("Meeting Name: ");
         String meetingName = br.readLine();
@@ -221,6 +264,7 @@ public class Main {
         System.out.print("Priority Score (1-10): ");
         int priority = Integer.parseInt(br.readLine());
 
+        //brute force scan
         System.out.println("\nScanning for common times between 8:00 and 16:00...");
         ArrayList<Activity> possibleSlots = new ArrayList<>();
         for (int day = 0; day < 5; day++){
@@ -228,12 +272,16 @@ public class Main {
                 for (int min = 0; min <= 45; min += 15){
                     int startTime = hour * 100 + min;
                     int endTime = addMinutes(startTime, duration);
+
+                    //skips slots past 5 p.m.
                     if (endTime > 1700){
                         continue;
                     }
                     boolean[] meetingDays = new boolean[7];
                     meetingDays[day] = true;
                     Activity proposed = new Activity(meetingName, startTime, endTime, meetingLoc, priority, meetingDays);
+
+                    //check that no selected student has a conflicting activity
                     boolean isSltoFree = true;
                     for (User u : selected){
                         for (Activity existing : u.getActivities()){
@@ -256,6 +304,8 @@ public class Main {
             System.out.println("FAILED: No common time found for all selected students.");
             return;
         }
+
+        //display all valid slots and let the leader pick one
         System.out.println("\n--- Available Time Slots ---");
         for (int i = 0; i < possibleSlots.size(); i++){
             Activity slot = possibleSlots.get(i);
@@ -267,6 +317,8 @@ public class Main {
         int choice = Integer.parseInt(br.readLine());
         if (choice > 0 && choice <= possibleSlots.size()) {
             Activity confirmedMeeting = possibleSlots.get(choice - 1);
+
+            // Add the confirmed meeting to all selected student and save
             for (User u : selected) {
                 u.addActivity(confirmedMeeting);
             }
@@ -278,6 +330,12 @@ public class Main {
         }
     }
 
+    /**
+     * Adds a duration in minutes to a time in HHMM format and returns the result in HHMM format.
+     * @param startTime Start time in HHMM format
+     * @param duration Duration to add in minutes
+     * @return Resulting time in HHMM
+     */
     private static int addMinutes(int startTime, int duration){
         int hours = startTime / 100;
         int minutes = startTime % 100;
@@ -287,6 +345,11 @@ public class Main {
         return (hours * 100) + minutes;
     }
 
+    /**
+     * Intialize all system components: locationManager, ConflictChecker, ScheduleOptimizer, and loads all user profiles.
+     * Called once at the start of the program before the main menu loop begins
+     * @throws IOException If any csv files could not be read
+     */
     private static void initialize() throws IOException{
         lm = new LocationManager();
         br = new BufferedReader(new InputStreamReader(System.in));
@@ -296,6 +359,4 @@ public class Main {
         users = DataManager.loadUsers(filePathUser);
         System.out.println("System initailized with " + users.size() + " users");
     }
-
-
 }
