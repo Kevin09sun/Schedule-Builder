@@ -142,8 +142,19 @@ public class Main {
         int start = Integer.parseInt(br.readLine());
         System.out.println("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
         int end = Integer.parseInt(br.readLine());
-        System.out.println("Enter Activity Location: ");
-        String location = br.readLine();
+        ArrayList<String> locationList = new ArrayList<>(lm.getLocations());
+        Collections.sort(locationList);
+        System.out.println("Select a location: ");
+        for (int i = 0; i < locationList.size(); i++){
+            System.out.println((i + 1) + ". " + locationList.get(i));
+        }
+        System.out.print("Enter Number: ");
+        int locChoice = Integer.parseInt(br.readLine());
+        while (locChoice < 1 || locChoice > locationList.size()) {
+            System.out.print("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
+            locChoice = Integer.parseInt(br.readLine());
+        }
+        String location = locationList.get(locChoice - 1);
         System.out.println("Enter Activity Priority (1 = low, 9 = high): ");
         int priority = Integer.parseInt(br.readLine());
 
@@ -257,8 +268,19 @@ public class Main {
         System.out.println("\n--- Meeting Details ---");
         System.out.print("Meeting Name: ");
         String meetingName = br.readLine();
-        System.out.print("Meeting Location: ");
-        String meetingLoc = br.readLine();
+        ArrayList<String> locationList = new ArrayList<>(lm.getLocations());
+        Collections.sort(locationList);
+        System.out.println("Select a location:");
+        for (int i = 0; i < locationList.size(); i++) {
+            System.out.println((i + 1) + ". " + locationList.get(i));
+        }
+        System.out.print("Enter number: ");
+        int locChoice = Integer.parseInt(br.readLine());
+        while (locChoice < 1 || locChoice > locationList.size()) {
+            System.out.print("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
+            locChoice = Integer.parseInt(br.readLine());
+        }
+        String meetingLoc = locationList.get(locChoice - 1);
         System.out.print("Duration (in minutes): ");
         int duration = Integer.parseInt(br.readLine());
         System.out.print("Priority Score (1-10): ");

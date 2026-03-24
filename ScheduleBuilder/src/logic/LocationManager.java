@@ -24,6 +24,14 @@ public class LocationManager {
     }
 
     /**
+     * Returns all known locations names in the graph
+     * @return A set of all location name strings
+     */
+    public Set<String> getLocations(){
+        return adjMap.keySet();
+    }
+
+    /**
      * Adds a bidirectional edge between two locations given a travel time.
      * Both directions are added so that travel time is equal (a to b = b to a).
      * All location names are lowercased to ensure consistent lookups.
