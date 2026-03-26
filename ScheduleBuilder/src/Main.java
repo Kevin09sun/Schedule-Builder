@@ -96,8 +96,8 @@ public class Main {
                     System.out.println("--- OPTIMIZED SCHEDULE SUGGESTION ---");
                     printSchedule(optimized);
                     System.out.println("Do you wish to use this schedule? (Respond with Yes or No): ");
-                    String ans = br.readLine();
-                    if (ans.equals("Yes")){
+                    String ans = br.readLine().toLowerCase().trim();
+                    if (ans.equals("yes")){
                         curUser.updateSchedule(optimized);
                         System.out.println("Schedule updated");
                     }
