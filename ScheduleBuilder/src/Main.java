@@ -14,7 +14,6 @@ public class Main {
     private static ScheduleOptimizer so;
     private static ArrayList<User> users;
     private static BufferedReader br;
-    private static DataManager dm;
 
     private static final String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
     private static final String filePathUser = "ScheduleBuilder\\resources\\user.csv";
