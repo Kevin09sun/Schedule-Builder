@@ -37,6 +37,7 @@ public class DataManager {
             line = br.readLine();
         }
         System.out.println("Location loaded successfully\n");
+        br.close();
     }
     
     /**
@@ -95,6 +96,7 @@ public class DataManager {
             line = br.readLine();
         }
         System.out.println("User loaded\n");
+        br.close();
         return new ArrayList<>(userMap.values());
     }
 
