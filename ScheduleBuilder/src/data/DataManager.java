@@ -72,7 +72,7 @@ public class DataManager {
             String actName = parts[1].trim();
             int start = Integer.parseInt(parts[2].trim());
             int end = Integer.parseInt(parts[3].trim());
-            String location = parts[4].trim();
+            String location = parts[4].trim().toLowerCase();
             int priority = Integer.parseInt(parts[5].trim());
 
             //parsing day string into a boolean array

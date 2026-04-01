@@ -1,8 +1,105 @@
-Rm 204,MathWing,6
-Gym,Cafeteria,3
-MathWing,Gym,4
-Rm 204,Gym,1
-Rm 204,Cafeteria,20
-Rm 204, MusicRm, 15
-Rm 203, Gym, 10
-House, Gym, 1
+Rm 101,Rm 102,1
+Rm 102,Rm 103,1
+Rm 103,Rm 104,1
+Rm 104,Rm 105,1
+Rm 105,Rm 106,1
+Rm 106,Rm 107,1
+Rm 107,Rm 108,1
+Rm 108,Rm 109,1
+Rm 109,Rm 110,1
+Rm 201,Rm 202,1
+Rm 202,Rm 203,1
+Rm 203,Rm 204,1
+Rm 204,Rm 205,1
+Rm 205,Rm 206,1
+Rm 206,Rm 207,1
+Rm 207,Rm 208,1
+Rm 208,Rm 209,1
+Rm 209,Rm 210,1
+Rm 210,Rm 211,1
+Rm 211,Rm 212,1
+Rm 212,Rm 213,1
+Rm 213,Rm 214,1
+Rm 214,Rm 215,1
+Rm 215,Rm 216,1
+Rm 216,Rm 217,1
+Rm 217,Rm 218,1
+Rm 218,Rm 219,1
+Rm 219,Rm 220,1
+Rm 301,Rm 302,1
+Rm 302,Rm 303,1
+Rm 303,Rm 304,1
+Rm 304,Rm 305,1
+Rm 305,Rm 306,1
+Rm 306,Rm 307,1
+Rm 307,Rm 308,1
+Rm 308,Rm 309,1
+Rm 309,Rm 310,1
+Rm 310,Rm 311,1
+Rm 311,Rm 312,1
+Rm 312,Rm 313,1
+Rm 313,Rm 314,1
+Rm 314,Rm 315,1
+Rm 315,Rm 316,1
+Rm 316,Rm 317,1
+Rm 317,Rm 318,1
+Rm 318,Rm 319,1
+Rm 319,Rm 320,1
+Rm 320,Rm 321,1
+Rm 321,Rm 322,1
+Rm 322,Rm 323,1
+Rm 323,Rm 324,1
+Rm 324,Rm 325,1
+Rm 325,Rm 326,1
+Rm 326,Rm 327,1
+Rm 327,Rm 328,1
+Rm 328,Rm 329,1
+Rm 329,Rm 330,1
+Rm 330,Rm 331,1
+Rm 331,Rm 332,1
+Rm 332,Rm 333,1
+Rm 333,Rm 334,1
+Rm 334,Rm 335,1
+Rm 335,Rm 336,1
+Rm 336,Rm 337,1
+Rm 337,Rm 338,1
+Rm 338,Rm 339,1
+Rm 339,Rm 340,1
+Rm 101,Rm 201,2
+Rm 105,Rm 205,2
+Rm 110,Rm 210,2
+Rm 201,Rm 301,2
+Rm 205,Rm 305,2
+Rm 210,Rm 310,2
+Rm 215,Rm 315,2
+Rm 220,Rm 320,2
+Rm 101,Cafeteria,3
+Rm 110,Cafeteria,4
+Rm 101,Library,4
+Rm 110,Library,2
+Rm 201,Library,4
+Rm 210,Library,3
+Rm 101,Lower Gym,5
+Rm 110,Lower Gym,3
+Lower Gym,Upper Gym,2
+Lower Gym,Cafeteria,3
+Upper Gym,Cafeteria,4
+Library,Cafeteria,3
+Library,Lower Gym,4
+Library,Upper Gym,5
+Rm 201,MusicRm,3
+Rm 210,MusicRm,5
+MusicRm,Library,4
+MusicRm,Cafeteria,5
+MusicRm,Lower Gym,6
+Rm 301,Library,5
+Rm 310,Library,4
+Rm 320,Library,6
+Rm 340,Library,7
+Rm 301,Cafeteria,6
+Rm 320,Cafeteria,7
+Lower Gym,House,1
+Upper Gym,House,2
+Cafeteria,House,4
+Library,House,5
+Rm 101,House,6
