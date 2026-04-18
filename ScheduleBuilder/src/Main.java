@@ -135,8 +135,16 @@ public class Main {
     private static void addActivityToSchedule(User u) throws IOException{
         System.out.println("Enter Activity Name: ");
         String name = br.readLine().trim();
-        int start = readInt("Enter Activity Start Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
-        int end = readInt("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
+
+        int start = readTime("Enter Activity Start Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
+        int end;
+        while (true){
+            end = readTime("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
+            if (end > start){
+                break;
+            }
+            System.out.println("Invalid time: end time must be after start time.");
+        }
         ArrayList<String> locationList = new ArrayList<>(lm.getLocations());
         Collections.sort(locationList);
         System.out.println("Select a location: ");
@@ -148,19 +156,30 @@ public class Main {
             locChoice = readInt("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
         }
         String location = locationList.get(locChoice - 1);
-        int priority = readInt("Enter Activity Priority (1 = low, 9 = high): ");
+        int priority = readIntInRange("Enter Activity Priority (1 = low, 9 = high): ", 1, 9);
 
-        System.out.println("Enter days it repeats (1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun).");
-        System.out.println("Example: Type '135' for Mon/Wed/Fri, or '12345' for Every Weekday:");
-        String daysInput = br.readLine().trim();
-
-        //parse digit string into boolean array
         boolean[] repeatingDays = new boolean[7];
-        for (char c : daysInput.toCharArray()){
-            int dayNum = Character.getNumericValue(c);
-            if (dayNum >= 1 && dayNum <= 7){
-                repeatingDays[dayNum - 1] = true;
+        while (true){
+            System.out.println("Enter days it repeats (1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun).");
+            System.out.println("Example: Type '135' for Mon/Wed/Fri, or '12345' for Every Weekday:");
+            String daysInput = br.readLine().trim();
+
+            //parse digit string into boolean array
+            boolean day = false;
+            for (char c : daysInput.toCharArray()){
+                int dayNum = Character.getNumericValue(c);
+                if (dayNum >= 1 && dayNum <= 7){
+                    repeatingDays[dayNum - 1] = true;
+                    day = true;
+                }
             }
+
+            if (day){
+                break;
+            }
+            System.out.println("Invalid input: please enter at least one valid day digit (1-7).");
+            //reset in case some invalid chars flipped bits that we want to discard
+            repeatingDays = new boolean[7];
         }
 
         Activity a = new Activity(name, start, end, location, priority, repeatingDays);
@@ -278,8 +297,8 @@ public class Main {
             locChoice = readInt("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
         }
         String meetingLoc = locationList.get(locChoice - 1);
-        int duration = readInt("Duration (in minutes): ");
-        int priority = readInt("Priority Score (1-10): ");
+        int duration = readIntInRange("Duration (in minutes): ", 1, 480);
+        int priority = readIntInRange("Priority Score (1-9): ", 1, 9);
 
         //brute force scan
         System.out.println("\nScanning for common times between 8:00 and 16:00...");
@@ -393,6 +412,42 @@ public class Main {
             } catch (NumberFormatException e){
                 System.out.println("Invalid intput: please enter a whole number");
             }
+        }
+    }
+
+    /**
+     * Reads an integer between the range of min and max, flagging for invalid input.
+     * @param prompt The prompt to display
+     * @param min The minimum value
+     * @param max The maximum value
+     * @return A valid integer in the specified range
+     * @throws IOException If reading fails
+     */
+    private static int readIntInRange(String prompt, int min, int max) throws IOException{
+        while (true){
+            int val = readInt(prompt);
+            if (val >= min && val <= max){
+                return val;
+            }
+            System.out.println("Invalid input: please enter a number between " + min + " and " + max + ".");
+        }
+    }
+
+    /**
+     * Reads a time value in HHMM and ensures that it is valid
+     * @param prompt The prompt to display
+     * @return A valid time
+     * @throws IOException If reading fails
+     */
+    private static int readTime(String prompt) throws IOException{
+        while (true){
+            int val = readInt(prompt);
+            int hours = val / 100;
+            int minutes = val % 100;
+            if (val >= 0 && val <= 2359 && hours <= 23 && minutes <= 59){
+                return val;
+            }
+            System.out.println("Invalid time: please enter a time between 0000 and 2359 in HHMM format.");
         }
     }
 }
