@@ -25,8 +25,7 @@ public class Main {
             System.out.println("1. Student Mode (Manage Personal Schedule)");
             System.out.println("2. Club Leader Mode (Find Common Times)");
             System.out.println("3. Save & Exit");
-            System.out.print("Select an option: ");
-            int choice = Integer.parseInt(br.readLine());
+            int choice = readInt("Select an option: ");
             switch (choice) {
                 case 1:
                     studentMode();
@@ -78,8 +77,7 @@ public class Main {
             System.out.println("3: Remove an Activity From my Schedule");
             System.out.println("4. Optimize My Schedule (Knapsack)");
             System.out.println("5. Back to Main Menu");
-            System.out.print("Choice: ");
-            int choice = Integer.parseInt(br.readLine());
+            int choice = readInt("Choice: ");
             switch (choice) {
                 case 1:
                     printSchedule(curUser.getActivities());
@@ -137,25 +135,20 @@ public class Main {
     private static void addActivityToSchedule(User u) throws IOException{
         System.out.println("Enter Activity Name: ");
         String name = br.readLine().trim();
-        System.out.println("Enter Activity Start Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
-        int start = Integer.parseInt(br.readLine());
-        System.out.println("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
-        int end = Integer.parseInt(br.readLine());
+        int start = readInt("Enter Activity Start Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
+        int end = readInt("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
         ArrayList<String> locationList = new ArrayList<>(lm.getLocations());
         Collections.sort(locationList);
         System.out.println("Select a location: ");
         for (int i = 0; i < locationList.size(); i++){
             System.out.println((i + 1) + ". " + locationList.get(i));
         }
-        System.out.print("Enter Number: ");
-        int locChoice = Integer.parseInt(br.readLine());
+        int locChoice = readInt("Enter Number: ");
         while (locChoice < 1 || locChoice > locationList.size()) {
-            System.out.print("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
-            locChoice = Integer.parseInt(br.readLine());
+            locChoice = readInt("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
         }
         String location = locationList.get(locChoice - 1);
-        System.out.println("Enter Activity Priority (1 = low, 9 = high): ");
-        int priority = Integer.parseInt(br.readLine());
+        int priority = readInt("Enter Activity Priority (1 = low, 9 = high): ");
 
         System.out.println("Enter days it repeats (1=Mon, 2=Tue, 3=Wed, 4=Thu, 5=Fri, 6=Sat, 7=Sun).");
         System.out.println("Example: Type '135' for Mon/Wed/Fri, or '12345' for Every Weekday:");
@@ -171,23 +164,30 @@ public class Main {
         }
 
         Activity a = new Activity(name, start, end, location, priority, repeatingDays);
-
-        //checks for conflicts with existing activities before adding
+        ArrayList<Activity> conflicts = new ArrayList<>();
         for (Activity acts : u.getActivities()){
             if (cc.hasConflict(acts, a)){
-                System.out.println("The new activity has conflict with another activity " + acts.getName() + " . Are you sure you want to add? (Respond Yes or No)");
-                String response = br.readLine();
-                if (response.equals("Yes")){
-                    u.addActivity(a);
-                    System.out.println("Activity Added");
-                    return;
-                }
-                else {
-                    System.out.println("Ok, going back to menu");
-                    return;
-                }
+                conflicts.add(acts);
             }
         }
+        //if any conflicts exist, display them all and ask for a single confirmation
+        if (!conflicts.isEmpty()){
+            System.out.println("The new activity conflicts with " + conflicts.size() + " existing activity/activities:");
+            for (Activity c : conflicts){
+                System.out.println(" - " + c.getName() + " [" + c.getDaysString() + "| " + c.getStartTime() + "-" + c.getEndTime() + "] @" + c.getLocation());
+            }
+            System.out.print("Are you sure you want to add this activity anyway? (Yes/No): ");
+            String response = br.readLine().trim();
+            if (response.equalsIgnoreCase("yes")){
+                u.addActivity(a);
+                System.out.println("Activity Added");
+            }
+            else {
+                System.out.println("Ok, going back to menu");
+            }
+            return;
+        }
+
         u.addActivity(a);
         System.out.println("Activity Added");
         return;
@@ -273,17 +273,13 @@ public class Main {
         for (int i = 0; i < locationList.size(); i++) {
             System.out.println((i + 1) + ". " + locationList.get(i));
         }
-        System.out.print("Enter number: ");
-        int locChoice = Integer.parseInt(br.readLine());
+        int locChoice = readInt("Enter Number: ");
         while (locChoice < 1 || locChoice > locationList.size()) {
-            System.out.print("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
-            locChoice = Integer.parseInt(br.readLine());
+            locChoice = readInt("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
         }
         String meetingLoc = locationList.get(locChoice - 1);
-        System.out.print("Duration (in minutes): ");
-        int duration = Integer.parseInt(br.readLine());
-        System.out.print("Priority Score (1-10): ");
-        int priority = Integer.parseInt(br.readLine());
+        int duration = readInt("Duration (in minutes): ");
+        int priority = readInt("Priority Score (1-10): ");
 
         //brute force scan
         System.out.println("\nScanning for common times between 8:00 and 16:00...");
@@ -333,9 +329,7 @@ public class Main {
             System.out.println((i + 1) + ". " + slot.getDaysString() + " " + slot.getStartTime() + " to " + slot.getEndTime());
         }
         
-        System.out.print("\nSelect a slot to confirm (or 0 to cancel): ");
-
-        int choice = Integer.parseInt(br.readLine());
+        int choice = readInt("\nSelect a slot to confirm (or 0 to cancel): ");
         if (choice > 0 && choice <= possibleSlots.size()) {
             Activity confirmedMeeting = possibleSlots.get(choice - 1);
 
@@ -379,5 +373,26 @@ public class Main {
         so = new ScheduleOptimizer(cc);
         users = DataManager.loadUsers(filePathUser);
         System.out.println("System initailized with " + users.size() + " users");
+    }
+
+    /**
+     * Reads an integer from the user, reprompting if the input is invalid
+     * @param prompt The prompt/question to display to the user
+     * @return A valid integer entered by the user
+     * @throws IOException If reading fails
+     */
+    private static int readInt(String prompt) throws IOException{
+        while (true){
+            System.out.println(prompt);
+            String raw = br.readLine();
+            if (raw == null){
+                return 0;
+            }
+            try {
+                return Integer.parseInt(raw.trim());
+            } catch (NumberFormatException e){
+                System.out.println("Invalid intput: please enter a whole number");
+            }
+        }
     }
 }
