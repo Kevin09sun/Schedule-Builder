@@ -21,6 +21,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         initialize();
         while (true){
+            //prints the initial options
             System.out.println("   CLUB CONFLICT SCHEDULER - MAIN MENU");
             System.out.println("1. Student Mode (Manage Personal Schedule)");
             System.out.println("2. Club Leader Mode (Find Common Times)");
@@ -71,6 +72,7 @@ public class Main {
 
         boolean inMenu = true;
         while (inMenu){
+            //main menu for student mode
             System.out.println("\n--- Student Menu: " + curUser.getName() + " ---");
             System.out.println("1. View Current Schedule");
             System.out.println("2. Add Activity");
@@ -89,6 +91,7 @@ public class Main {
                     removeActivity(curUser);
                     break;
                 case 4:
+                    //uses recursion to find the most optimal schedule
                     System.out.println("Calculating optimal schedule based on priorities...");
                     ArrayList<Activity> optimized = so.getOptimalSchedule(curUser.getActivities());
                     System.out.println("--- OPTIMIZED SCHEDULE SUGGESTION ---");
@@ -138,6 +141,7 @@ public class Main {
 
         int start = readTime("Enter Activity Start Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
         int end;
+        //continues prompting for valid end time that is later than the start time
         while (true){
             end = readTime("Enter Activity End Time (Form {hour}{minute}, e.g. 14:30 should be entered as 1430): ");
             if (end > start){
@@ -152,11 +156,12 @@ public class Main {
             System.out.println((i + 1) + ". " + locationList.get(i));
         }
         int locChoice = readInt("Enter Number: ");
+        //ensure that the number is actually valid location
         while (locChoice < 1 || locChoice > locationList.size()) {
             locChoice = readInt("Invalid. Enter a number between 1 and " + locationList.size() + ": ");
         }
         String location = locationList.get(locChoice - 1);
-        int priority = readIntInRange("Enter Activity Priority (1 = low, 9 = high): ", 1, 9);
+        int priority = readIntInRange("Enter Activity Priority (1 = low, 10 = high): ", 1, 10);
 
         boolean[] repeatingDays = new boolean[7];
         while (true){
@@ -264,6 +269,7 @@ public class Main {
                 break;
             }
 
+            //checks if the given student user profile actually exists or not
             boolean studentFound = false;
             for (User u : users) {
                 if (u.getName().equalsIgnoreCase(inputName)) {
@@ -298,13 +304,13 @@ public class Main {
         }
         String meetingLoc = locationList.get(locChoice - 1);
         int duration = readIntInRange("Duration (in minutes): ", 1, 480);
-        int priority = readIntInRange("Priority Score (1-9): ", 1, 9);
+        int priority = readIntInRange("Priority Score (1-10): ", 1, 10);
 
-        //brute force scan
+        //brute force scan, even tho this looks bad, the outer 3 loops are only around 160 iterations in total. So really, it is a double nested for loop that is ran 160 times, which is O(N^2), not that bad
         System.out.println("\nScanning for common times between 8:00 and 16:00...");
         ArrayList<Activity> possibleSlots = new ArrayList<>();
         for (int day = 0; day < 5; day++){
-            for (int hour = 8; hour <= 16; hour++){
+            for (int hour = 8; hour < 16; hour++){
                 for (int min = 0; min <= 45; min += 15){
                     int startTime = hour * 100 + min;
                     int endTime = addMinutes(startTime, duration);
@@ -336,6 +342,8 @@ public class Main {
                 }
             }
         }
+
+        //no valid time slot found
         if (possibleSlots.isEmpty()) {
             System.out.println("FAILED: No common time found for all selected students.");
             return;
