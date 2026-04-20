@@ -12,6 +12,7 @@ import ScheduleBuilder.src.model.*;
  */
 public class ScheduleOptimizer {
     private ConflictChecker cc;
+    private HashMap<String, ArrayList<Activity>> dp;
 
     /**
      * Constructs a schedule optimizer with a conflict checker
@@ -19,6 +20,7 @@ public class ScheduleOptimizer {
      */
     public ScheduleOptimizer(ConflictChecker cc){
         this.cc = cc;
+        dp = new HashMap<>();
     }
 
     /**
@@ -30,6 +32,7 @@ public class ScheduleOptimizer {
     public ArrayList<Activity> getOptimalSchedule(ArrayList<Activity> allActivities){
         //sort by start time
         Collections.sort(allActivities, Comparator.comparingInt(Activity::getStartTime));
+        dp.clear();
         return recurse(allActivities, 0, null);
     }
 
@@ -57,6 +60,18 @@ public class ScheduleOptimizer {
         if (currentIndex >= activities.size()){
             return new ArrayList<>();
         }
+        int lastIdx;
+        if (last == null){
+            lastIdx = -1;
+        }
+        else {
+            lastIdx = activities.indexOf(last);
+        }
+        String key = currentIndex + "," + lastIdx;
+        if (dp.containsKey(key)){
+            //to prevent writing to previous cached results
+            return new ArrayList<>(dp.get(key));
+        }
 
         Activity a = activities.get(currentIndex);
 
@@ -76,14 +91,15 @@ public class ScheduleOptimizer {
             include.add(a);
             includeScore = calculate(include);
         }
-
-        //returns the higher scoring branch
+        ArrayList<Activity> result;
         if (skipScore > includeScore){
-            return skip;
+            result = skip;
         }
         else {
-            return include;
+            result = include;
         }
+        dp.put(key, result);
+        return result;
     }
 
     /**
