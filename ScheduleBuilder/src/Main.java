@@ -288,6 +288,11 @@ public class Main {
             }
         }
 
+        if (selected.isEmpty()){
+            System.out.println("No students selected. Returning to main menu");
+            return;
+        }
+
         //collecting meeting info
         System.out.println("\n--- Meeting Details ---");
         System.out.print("Meeting Name: ");

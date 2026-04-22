@@ -23,21 +23,21 @@ public class DataManager {
      * @throws IOException If the file can't be read
      */
     public static void loadLocation(String filename, LocationManager lm) throws IOException{
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line = br.readLine();
-        while (line != null){
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))){
+            String line = br.readLine();
+            while (line != null){
 
-            //extracts the origin, destination, and travel time
-            String[] parts = line.split(",");
-            String origin = parts[0].trim().toLowerCase();
-            String destination = parts[1].trim().toLowerCase();
-            int time = Integer.parseInt(parts[2].trim());
+                //extracts the origin, destination, and travel time
+                String[] parts = line.split(",");
+                String origin = parts[0].trim().toLowerCase();
+                String destination = parts[1].trim().toLowerCase();
+                int time = Integer.parseInt(parts[2].trim());
 
-            lm.addPath(origin, destination, time);
-            line = br.readLine();
+                lm.addPath(origin, destination, time);
+                line = br.readLine();
+            }
+            System.out.println("Location loaded successfully\n");
         }
-        System.out.println("Location loaded successfully\n");
-        br.close();
     }
     
     /**
@@ -59,45 +59,45 @@ public class DataManager {
      * @throws IOException If the file cannot be read
      */
     public static ArrayList<User> loadUsers(String filename) throws IOException{
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line = br.readLine();
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))){
+            String line = br.readLine();
 
-        //HashMap so one user can have multiple activities
-        HashMap<String, User> userMap = new HashMap<>();
-        while (line != null){
+            //HashMap so one user can have multiple activities
+            HashMap<String, User> userMap = new HashMap<>();
+            while (line != null){
 
-            //extracts and parse from csv
-            String[] parts = line.split(",");
-            String username = parts[0].trim();
-            String actName = parts[1].trim();
-            int start = Integer.parseInt(parts[2].trim());
-            int end = Integer.parseInt(parts[3].trim());
-            String location = parts[4].trim().toLowerCase();
-            int priority = Integer.parseInt(parts[5].trim());
+                //extracts and parse from csv
+                String[] parts = line.split(",");
+                String username = parts[0].trim();
+                String actName = parts[1].trim();
+                int start = Integer.parseInt(parts[2].trim());
+                int end = Integer.parseInt(parts[3].trim());
+                String location = parts[4].trim().toLowerCase();
+                int priority = Integer.parseInt(parts[5].trim());
 
-            //parsing day string into a boolean array
-            boolean days[] = new boolean[7];
-            if (parts.length >= 7){
-                String dayStr = parts[6].trim();
-                for (int i = 0; i < 7; i++){
-                    days[i] = (dayStr.charAt(i) == '1');
+                //parsing day string into a boolean array
+                boolean days[] = new boolean[7];
+                if (parts.length >= 7){
+                    String dayStr = parts[6].trim();
+                    for (int i = 0; i < 7; i++){
+                        days[i] = (dayStr.charAt(i) == '1');
+                    }
                 }
-            }
 
-            //default to monday if no day string present
-            else {
-                days[0] = true;
-            }
-            Activity act = new Activity(actName, start, end, location, priority, days);
+                //default to monday if no day string present
+                else {
+                    days[0] = true;
+                }
+                Activity act = new Activity(actName, start, end, location, priority, days);
 
-            //creates user entry if not already present, then appends the activity
-            userMap.putIfAbsent(username, new User(username));
-            userMap.get(username).addActivity(act);
-            line = br.readLine();
+                //creates user entry if not already present, then appends the activity
+                userMap.putIfAbsent(username, new User(username));
+                userMap.get(username).addActivity(act);
+                line = br.readLine();
+            }
+            System.out.println("User loaded\n");
+            return new ArrayList<>(userMap.values());
         }
-        System.out.println("User loaded\n");
-        br.close();
-        return new ArrayList<>(userMap.values());
     }
 
     /**
