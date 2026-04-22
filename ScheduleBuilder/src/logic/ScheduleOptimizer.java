@@ -99,7 +99,7 @@ public class ScheduleOptimizer {
         else {
             result = include;
         }
-        dp.put(key, result);
+        dp.put(key, new ArrayList<>(result));
         return result;
     }
 

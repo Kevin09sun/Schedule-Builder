@@ -43,6 +43,7 @@ public class ConflictChecker {
         for (int i = 0; i < 7; i++){
             if (a.getDays()[i] && b.getDays()[i]){
                 sameDay = true;
+                break;
             }
         }
         
