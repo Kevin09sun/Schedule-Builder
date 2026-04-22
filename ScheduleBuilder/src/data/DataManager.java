@@ -22,7 +22,7 @@ public class DataManager {
      * @param lm The locationManager to be filled out
      * @throws IOException If the file can't be read
      */
-    public static void loadLoaction(String filename, LocationManager lm) throws IOException{
+    public static void loadLocation(String filename, LocationManager lm) throws IOException{
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String line = br.readLine();
         while (line != null){

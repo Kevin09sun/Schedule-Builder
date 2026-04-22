@@ -15,8 +15,8 @@ public class Main {
     private static ArrayList<User> users;
     private static BufferedReader br;
 
-    private static final String filePathLocation = "ScheduleBuilder\\resources\\location.csv";
-    private static final String filePathUser = "ScheduleBuilder\\resources\\user.csv";
+    private static final String filePathLocation = "ScheduleBuilder/resources/location.csv";
+    private static final String filePathUser = "ScheduleBuilder/resources/user.csv";
 
     public static void main(String[] args) throws Exception {
         initialize();
@@ -388,14 +388,14 @@ public class Main {
     }
 
     /**
-     * Intialize all system components: locationManager, ConflictChecker, ScheduleOptimizer, and loads all user profiles.
+     * Initialize all system components: locationManager, ConflictChecker, ScheduleOptimizer, and loads all user profiles.
      * Called once at the start of the program before the main menu loop begins
      * @throws IOException If any csv files could not be read
      */
     private static void initialize() throws IOException{
         lm = new LocationManager();
         br = new BufferedReader(new InputStreamReader(System.in));
-        DataManager.loadLoaction(filePathLocation, lm);
+        DataManager.loadLocation(filePathLocation, lm);
         cc = new ConflictChecker(lm);
         so = new ScheduleOptimizer(cc);
         users = DataManager.loadUsers(filePathUser);

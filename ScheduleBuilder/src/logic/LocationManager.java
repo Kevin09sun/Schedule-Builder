@@ -1,7 +1,6 @@
 package ScheduleBuilder.src.logic;
 
 import ScheduleBuilder.src.model.*;
-import ScheduleBuilder.src.data.*;
 import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
 
@@ -102,9 +101,9 @@ public class LocationManager {
             if (adjMap.containsKey(cur.getKey())){
                 for(LocationEdge edge : adjMap.get(cur.getKey())){
                     // if the node we are trying to get to currently has a travel time higher than our proposed value, go to it
-                    if (cur.getValue() + edge.getMinutes() < shortestTime.getOrDefault(edge.getDestionation(), Integer.MAX_VALUE)){
-                        pq.add(new SimpleEntry<>(edge.getDestionation(), cur.getValue() + edge.getMinutes()));
-                        shortestTime.put(edge.getDestionation(), cur.getValue() + edge.getMinutes());
+                    if (cur.getValue() + edge.getMinutes() < shortestTime.getOrDefault(edge.getDestination(), Integer.MAX_VALUE)){
+                        pq.add(new SimpleEntry<>(edge.getDestination(), cur.getValue() + edge.getMinutes()));
+                        shortestTime.put(edge.getDestination(), cur.getValue() + edge.getMinutes());
                     }
                 }
             }

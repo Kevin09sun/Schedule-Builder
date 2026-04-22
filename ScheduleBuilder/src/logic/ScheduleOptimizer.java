@@ -1,7 +1,5 @@
 package ScheduleBuilder.src.logic;
-import java.lang.reflect.Array;
 import java.util.*;
-import ScheduleBuilder.src.data.*;
 import ScheduleBuilder.src.model.*;
 
 /**

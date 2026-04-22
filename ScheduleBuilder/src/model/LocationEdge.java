@@ -22,7 +22,7 @@ public class LocationEdge {
      * Returns the destination location in lowercase
      * @return The destination name in lowercase
      */
-    public String getDestionation(){
+    public String getDestination(){
         return destination.toLowerCase();
     }
 
