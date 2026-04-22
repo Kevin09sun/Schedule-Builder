@@ -24,6 +24,7 @@ public class ScheduleOptimizer {
     /**
      * Returns the optimal subset of activities that maximizes the total prioirty of them.
      * Activities are first sorted by start time to ensure that the recursive algorithm processes them in chronological order
+     * Then, the result is also sorted by chronological order, otherwise, it would be reversed.
      * @param allActivities The full list of activities to be optimized
      * @return An arraylist of activities representing the optimal schedule
      */
@@ -31,7 +32,9 @@ public class ScheduleOptimizer {
         //sort by start time
         Collections.sort(allActivities, Comparator.comparingInt(Activity::getStartTime));
         dp.clear();
-        return recurse(allActivities, 0, null);
+        ArrayList<Activity> result = recurse(allActivities, 0, null);
+        Collections.sort(result, Comparator.comparingInt(Activity::getStartTime));
+        return result;
     }
 
     /**
