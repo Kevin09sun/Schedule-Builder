@@ -399,7 +399,7 @@ public class Main {
         cc = new ConflictChecker(lm);
         so = new ScheduleOptimizer(cc);
         users = DataManager.loadUsers(filePathUser);
-        System.out.println("System initailized with " + users.size() + " users");
+        System.out.println("System initialized with " + users.size() + " users");
     }
 
     /**
@@ -418,7 +418,7 @@ public class Main {
             try {
                 return Integer.parseInt(raw.trim());
             } catch (NumberFormatException e){
-                System.out.println("Invalid intput: please enter a whole number");
+                System.out.println("Invalid input: please enter a whole number");
             }
         }
     }

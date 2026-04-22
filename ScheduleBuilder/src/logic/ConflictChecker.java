@@ -69,11 +69,6 @@ public class ConflictChecker {
         int timeDif = bStartMins - aEndMins;
 
         //conflict if travel time between locations exceeds the available gap
-        if (lm.getTravelTime(a.getLocation(), b.getLocation()) > timeDif){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return lm.getTravelTime(a.getLocation(), b.getLocation()) > timeDif;
     }
 }
