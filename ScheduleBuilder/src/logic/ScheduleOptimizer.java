@@ -10,7 +10,6 @@ import ScheduleBuilder.src.model.*;
  */
 public class ScheduleOptimizer {
     private ConflictChecker cc;
-    private HashMap<String, ArrayList<Activity>> dp;
 
     /**
      * Constructs a schedule optimizer with a conflict checker
@@ -18,7 +17,6 @@ public class ScheduleOptimizer {
      */
     public ScheduleOptimizer(ConflictChecker cc){
         this.cc = cc;
-        dp = new HashMap<>();
     }
 
     /**
@@ -31,8 +29,8 @@ public class ScheduleOptimizer {
     public ArrayList<Activity> getOptimalSchedule(ArrayList<Activity> allActivities){
         //sort by start time
         Collections.sort(allActivities, Comparator.comparingInt(Activity::getStartTime));
-        dp.clear();
-        ArrayList<Activity> result = recurse(allActivities, 0, null);
+        ArrayList<Activity> result = recurse(allActivities, 0, new ArrayList<>());
+        //sort result by start time also
         Collections.sort(result, Comparator.comparingInt(Activity::getStartTime));
         return result;
     }
@@ -43,7 +41,7 @@ public class ScheduleOptimizer {
      * At each index, two branches are explored:
      * <ul>
      *   <li>Skip: The current activity is excluded and the recursion advances.</li>
-     *   <li>Include: If the current activity does not conflict with the last included activity, it is added and the recursion advances with it as the new last.</li>
+     *   <li>Include: If the current activity does not conflict with all previously included activities, it is added and the recursion advances with it as the new last.</li>
      * </ul>
      * The branch with the higher total priority score is returned.
      * </p>
@@ -56,51 +54,45 @@ public class ScheduleOptimizer {
      * @param last The last activity that was included, null if none
      * @return The optimal schedule for maximizing priority
      */
-    private ArrayList<Activity> recurse(ArrayList<Activity> activities, int currentIndex, Activity last){
+    private ArrayList<Activity> recurse(ArrayList<Activity> activities, int currentIndex, ArrayList<Activity> included){
         //base case: no more activities to be optimized
         if (currentIndex >= activities.size()){
             return new ArrayList<>();
-        }
-        int lastIdx;
-        if (last == null){
-            lastIdx = -1;
-        }
-        else {
-            lastIdx = activities.indexOf(last);
-        }
-        String key = currentIndex + "," + lastIdx;
-        if (dp.containsKey(key)){
-            //to prevent writing to previous cached results
-            return new ArrayList<>(dp.get(key));
         }
 
         Activity a = activities.get(currentIndex);
 
         //option 1: skip
-        ArrayList<Activity> skip = recurse(activities, currentIndex + 1, last);
+        ArrayList<Activity> skip = recurse(activities, currentIndex + 1, included);
         int skipScore = calculate(skip);
 
         //option 2: include (only if it doesn't conflict)
         ArrayList<Activity> include = new ArrayList<>();
         int includeScore = -1;
         boolean conflict = false;
-        if (last != null){
-            conflict = cc.hasConflict(last, a);
+        //checks against all previous included activities
+        for (Activity prev : included){
+            if (cc.hasConflict(a, prev)){
+                conflict = true;
+                break;
+            }
         }
+        //if there wasn't any conflict with previous included activities
         if (!conflict){
-            include = recurse(activities, currentIndex + 1, a);
+            ArrayList<Activity> newIncluded = new ArrayList<>(included);
+            newIncluded.add(a);
+            //recurse with this new activity included
+            include = recurse(activities, currentIndex + 1, newIncluded);
             include.add(a);
             includeScore = calculate(include);
         }
-        ArrayList<Activity> result;
+        //takes the path with higher total priority score
         if (skipScore > includeScore){
-            result = skip;
+            return skip;
         }
         else {
-            result = include;
+            return include;
         }
-        dp.put(key, new ArrayList<>(result));
-        return result;
     }
 
     /**

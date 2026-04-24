@@ -39,13 +39,14 @@ public class LocationManager {
      * @param min Travel time in mins between the locations
      */
     public void addPath(String from, String to, int min){
-        //adding nodes
-        adjMap.putIfAbsent(from.toLowerCase().trim(), new ArrayList<>());
-        adjMap.putIfAbsent(to.toLowerCase().trim(), new ArrayList<>());
+        from = from.toLowerCase().trim();
+        to = to.toLowerCase().trim();
+        adjMap.putIfAbsent(from, new ArrayList<>());
+        adjMap.putIfAbsent(to, new ArrayList<>());
 
         //adding edges
-        adjMap.get(from.toLowerCase().trim()).add(new LocationEdge(to.toLowerCase().trim(), min));
-        adjMap.get(to.toLowerCase().trim()).add(new LocationEdge(from.toLowerCase().trim(), min));
+        adjMap.get(from).add(new LocationEdge(to, min));
+        adjMap.get(to).add(new LocationEdge(from, min));
     }
     
     /**

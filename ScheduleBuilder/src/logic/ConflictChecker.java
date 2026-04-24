@@ -52,7 +52,7 @@ public class ConflictChecker {
             return false;
         }
 
-        //reorder if necessary so that a always is before b
+        //reorder if necessary so that activity a always is before activity b
         if (a.getStartTime() > b.getStartTime()){
             Activity temp = a;
             a = b;
