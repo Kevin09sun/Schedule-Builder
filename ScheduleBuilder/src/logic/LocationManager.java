@@ -75,6 +75,10 @@ public class LocationManager {
             return 0;
         }
 
+        if (!adjMap.containsKey(from) || !adjMap.containsKey(to)){
+            return 0;
+        }
+
         // priority queue, entries are compared by their integer value
         PriorityQueue<Map.Entry<String, Integer>> pq = new PriorityQueue<>(Map.Entry.comparingByValue());
 
