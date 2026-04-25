@@ -1,28 +1,9 @@
-Farmer John,Math Club,1145,1225,rm 101,9,1111111
-Farmer John,party,1115,1125,lower gym,9,0000100
-Farmer John,pancake,1415,1615,rm 203,10,1000000
-kevin,dmoj,2000,2200,house,9,1111111
-kevin,fah,1445,1455,house,1,0000100
-kevin,dydx,1330,1530,rm 332,9,0100000
-Bessie Cow,CS Club,1145,1520,rm 204,8,1111111
-Bessie Cow,Band,1510,1630,musicrm,5,1111111
-Bessie Cow,Study,1130,1140,upper gym,10,1111111
-Bessie Cow,party,1115,1125,lower gym,9,0000100
-Bessie Cow,67,1015,1122,house,6,0010000
-owen,Ai,600,1000,house,9,1111111
-owen,67,1015,1122,house,6,0010000
-owen,party,1115,1125,upper gym,9,0000100
-owen,Study,1130,1140,lower gym,10,1111111
-owen,dydx,1330,1530,rm 332,9,0100000
-owen,pancake,1415,1615,rm 203,10,1000000
-owen,fah,1445,1455,house,1,0000100
-owen,ap stats,1500,1700,house,5,0000100
-owen,123,1430,1434,lower gym,4,0000100
-djn,a,100,2359,rm 104,9,1111111
-testuser,a,900,1000,rm 101,5,1000000
-testuser,b,930,1030,rm 101,5,0100000
-testuser,c,930,1030,rm 101,5,1000000
-testuser,123,1430,1434,lower gym,4,0000100
-bn,dydx,1330,1530,rm 332,9,0100000
-bn,jo,1200,1300,rm 332,9,1010100
-bn,is,120,130,rm 104,9,1000000
+Bob,CS Club,1520,1620,rm 204,9,1010100
+Bob,Basketball,1530,1700,lower gym,7,0100010
+Bob,Tutoring,1200,1300,rm 301,5,0010000
+Alice,Math Club,1520,1620,rm 203,8,1010100
+Alice,Band,1520,1630,musicrm,6,0100010
+Alice,Study Hall,1200,1300,library,4,1111100
+Charlie,Study Hall,1200,1300,library,3,1111100
+Charlie,Art Club,1520,1630,rm 108,6,0010000
+Charlie,CS Club,1520,1620,rm 204,8,1010100
