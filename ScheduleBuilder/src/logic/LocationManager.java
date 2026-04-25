@@ -75,6 +75,7 @@ public class LocationManager {
             return 0;
         }
 
+        //if either location doesn't exist in the database, return no travel time
         if (!adjMap.containsKey(from) || !adjMap.containsKey(to)){
             return 0;
         }
