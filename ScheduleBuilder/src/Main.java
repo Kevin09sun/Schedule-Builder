@@ -1,3 +1,8 @@
+/*
+ * Author: Kevin Sun
+ * Date: Apr 24, 2026
+ * Description: A Schedule builder application designed for students and club leaders trying to manage their schedules
+ */
 package ScheduleBuilder.src;
 import ScheduleBuilder.src.data.*;
 import ScheduleBuilder.src.logic.*;
